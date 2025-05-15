@@ -34,3 +34,52 @@ def test_prediction():
     json_data = response.json()
     assert "predictions" in json_data
     assert isinstance(json_data["predictions"], list)
+
+
+def test_train_and_predict_multiple_models():
+    train_csv = """age,blood_pressure,cholesterol,smoker,risk
+45,123,200,No,0
+52,134,240,Yes,1
+60,170,260,No,0
+"""
+
+    train_file_heart = BytesIO(train_csv.encode("utf-8"))
+    response = client.post(
+        "/train?model=heart-risk",
+        files={"file": ("heart.csv", train_file_heart, "text/csv")},
+    )
+    assert response.status_code == 200
+    assert "trained" in response.json().get("message", "").lower()
+
+    train_file_lung = BytesIO(train_csv.encode("utf-8"))
+    response = client.post(
+        "/train?model=lung-risk",
+        files={"file": ("lung.csv", train_file_lung, "text/csv")},
+    )
+
+    assert response.status_code == 200
+
+    predict_csv = """age,blood_pressure,cholesterol,smoker
+50,130,210,No
+55,140,250,Yes
+"""
+
+    predict_file_heart = BytesIO(predict_csv.encode("utf-8"))
+    response = client.post(
+        "/predict?model=heart-risk",
+        files={"file": ("predict_heart.csv", predict_file_heart, "text/csv")},
+    )
+    assert response.status_code == 200
+    json_data = response.json()
+    assert "predictions" in json_data
+    assert isinstance(json_data["predictions"], list)
+
+    predict_file_lung = BytesIO(predict_csv.encode("utf-8"))
+    response = client.post(
+        "/predict?model=lung-risk",
+        files={"file": ("predict_lung.csv", predict_file_lung, "text/csv")},
+    )
+    assert response.status_code == 200
+    json_data = response.json()
+    assert "predictions" in json_data
+    assert isinstance(json_data["predictions"], list)

@@ -1,15 +1,24 @@
 import os
 import joblib
+from pathlib import Path
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "models", "model.pkl")
-
-
-def save_model(model) -> None:
-    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    joblib.dump(model, MODEL_PATH)
+MODEL_DIR = Path(__file__).parent / "models"
+MODEL_DIR.mkdir(exist_ok=True)
 
 
-def load_model():
-    if not os.path.exists(MODEL_PATH):
-        raise FileNotFoundError("No saved model found.")
-    return joblib.load(MODEL_PATH)
+def get_model_path(model_name: str) -> Path:
+    filename = f"{model_name}.pkl"
+    return MODEL_DIR / filename
+
+
+def save_model(model, model_name: str = "default") -> None:
+    os.makedirs(MODEL_DIR, exist_ok=True)
+    path = get_model_path(model_name)
+    joblib.dump(model, path)
+
+
+def load_model(model_name: str = "default"):
+    path = get_model_path(model_name)
+    if not path.exists():
+        raise FileNotFoundError(f"No saved model found for '{model_name}'.")
+    return joblib.load(path)

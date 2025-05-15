@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from app.model_utils import save_model
 
 
-def train_model_df(df: pd.DataFrame) -> dict:
+def train_model_df(df: pd.DataFrame, model_name: str = "default") -> dict:
     if "risk" not in df.columns:
         raise ValueError("Dataset must have a risk column")
 
@@ -22,7 +22,7 @@ def train_model_df(df: pd.DataFrame) -> dict:
     model = LogisticRegression()
     model.fit(X_train, y_train)
 
-    save_model(model)
+    save_model(model, model_name)
 
     y_pred = model.predict(X_test)
     return {

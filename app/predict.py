@@ -3,11 +3,11 @@ import pandas as pd
 from app.model_utils import load_model
 
 
-def predict_from_df(df: pd.DataFrame) -> list:
+def predict_from_df(df: pd.DataFrame, model_name: str = "default") -> list:
     if "smoker" in df.columns:
         df["smoker"] = df["smoker"].map({"Yes": 1, "No": 0})
 
-    model = load_model()
+    model = load_model(model_name)
     predictions = model.predict(df)
 
     result = []
