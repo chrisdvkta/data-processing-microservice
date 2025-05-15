@@ -10,4 +10,10 @@ def predict_from_df(df: pd.DataFrame) -> list:
     model = load_model()
     predictions = model.predict(df)
 
-    return predictions.tolist()  # serializable json
+    result = []
+    for prediction in predictions.tolist():  # serializable json
+        is_risk = prediction == 1
+        status = "High risk" if is_risk else "low risk"
+        result.append({"risk": is_risk, "status": status})
+
+    return result
