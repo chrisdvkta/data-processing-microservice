@@ -6,6 +6,20 @@ client = TestClient(app)
 
 
 def test_prediction():
+    # training for creating a model first.
+    training_csv = """age,blood_pressure,cholestrol,smoker,risk
+45,120,200,No,Low
+52,135,240,Yes,High
+60,140,260,No,High
+38,115,190,No,Low
+"""
+
+    train_file = BytesIO(training_csv.encode("utf-8"))
+    response_train = client.post(
+        "/train", {"file": ("training_data.csv", train_file, "text/csv")}
+    )
+
+    assert response_train.status_code == 200
     # predict without the label column
     csv_data = """
 age,blood_pressure,cholesterol,smoker
