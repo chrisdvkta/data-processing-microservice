@@ -1,0 +1,5 @@
+age,blood_pressure,cholesterol,smoker,risk
+45,120,200,No,0
+52,135,240,Yes,1
+60,140,260,No,1
+38,115,190,No,0
