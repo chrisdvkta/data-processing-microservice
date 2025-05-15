@@ -10,7 +10,16 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"hello, welcome to CSV Health Risk Predictor, please refer to /docs "}
+    return {
+        "message": "Welcome to the Health Risk Predictor API",
+        "endpoints": {
+            "train": "/train (POST) - Upload a CSV file to train a model",
+            "predict": "/predict (POST) - Upload a CSV file to get predictions",
+            "docs": "/docs - Swagger UI for interactive API documentation",
+        },
+        "default_model": "default",
+        "note": "You can specify ?model=your_model_name in both /train and /predict",
+    }
 
 
 @app.post("/train")
