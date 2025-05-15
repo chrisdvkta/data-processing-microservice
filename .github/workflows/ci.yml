@@ -30,4 +30,4 @@ jobs:
         run: pytest
 
       - name: Build Docker image
-        run: docker build -t csv-trainer
+        run: docker build -t csv-trainer .
