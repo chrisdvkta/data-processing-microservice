@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 from app.main import app
-import pandas as pd
 from io import StringIO
 
 client = TestClient(app)
