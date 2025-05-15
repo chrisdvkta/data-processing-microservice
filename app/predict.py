@@ -11,9 +11,9 @@ def predict_from_df(df: pd.DataFrame, model_name: str = "default") -> list:
     predictions = model.predict(df)
 
     result = []
-    for prediction in predictions.tolist():
-        if prediction == 1:
-            result.append("At Risk")
-        else:
-            result.append("Not at Risk")
+    for prediction in predictions.tolist():  # serializable json
+        is_risk = prediction == 1
+        status = "High risk" if is_risk else "low risk"
+        result.append({"risk": is_risk, "status": status})
+
     return result

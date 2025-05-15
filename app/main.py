@@ -10,7 +10,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"hello"}
+    return {"hello, welcome to CSV Health Risk Predictor, please refer to /docs "}
 
 
 @app.post("/train")
