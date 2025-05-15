@@ -1,25 +1,10 @@
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from sklearn.linear_model import LogisticRegression
-
-from app import model_utils
-from app.model_utils import load_model, save_model
-from app.train import test
+from io import StringIO
+from fastapi import FastAPI, File, HTTPException, UploadFile
+import pandas as pd
+from app.train import train_model_df
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    model = LogisticRegression()
-    model_utils.save_model(model)
-
-    # Load model
-    loaded_model = model_utils.load_model()
-    print("Model loaded:", loaded_model)
-
-    yield  # This is where FastAPI serves requests
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 
 @app.get("/")
@@ -27,6 +12,16 @@ def read_root():
     return {"hello"}
 
 
-# @app.get("/hello")
-# def save():
-#     return test()
+@app.post("/train")
+async def train_model(file: UploadFile = File(...)):
+    if not file.filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="only csv files are supported")
+
+    try:
+        contents = await file.read()
+        df = pd.read_csv(StringIO(contents.decode("utf-8")))
+
+        metrics = train_model_df(df)
+        return {"message": "model trained successfully", "metrics": metrics}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
