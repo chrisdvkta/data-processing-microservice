@@ -37,7 +37,7 @@ async def predict(file: UploadFile = File(...)):
         contents = await file.read()
         df = pd.read_csv(StringIO(contents.decode("utf-8")))
         predictions = predict_from_df(df)
-        return {"predictions": predictions}
+        return {"message": "Here's the predictions", "predictions": predictions}
 
     except FileNotFoundError:
         raise HTTPException(
